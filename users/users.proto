@@ -13,19 +13,33 @@ message User {
   string patronymic = 4;
   string email = 5;
   string phone = 6;
-  string isEnabled = 7;
+  bool isEnabled = 7;
   string photoURL = 8;
   google.protobuf.Timestamp createdAt = 9;
   google.protobuf.Timestamp updateAt = 10;
   google.protobuf.Timestamp deletedAt = 11;
 }
 
-message UserCreateRequest {
-  User user = 1;
+message UserCreate {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string patronymic = 4;
+  string email = 5;
+  string phone = 6;
+  bool isEnabled = 7;
+  string photoURL = 8;
 }
 
-message UserCreateResponse {
+message UserUpdate {
   string id = 1;
+  optional string firstName = 2;
+  optional string lastName = 3;
+  optional string patronymic = 4;
+  optional string email = 5;
+  optional string phone = 6;
+  optional bool isEnabled = 7;
+  optional string photoURL = 8;
 }
 
 message EntityId {
@@ -42,10 +56,10 @@ message Paging {
 }
 
 service Users {
-  rpc Create(UserCreateRequest) returns (UserCreateResponse){}
+  rpc Create(UserCreate) returns (EntityId){}
   rpc GetById(EntityId) returns (User){};
   rpc List(Paging) returns (UsersList){};
-  rpc Update(User) returns (User){};
+  rpc Update(UserUpdate) returns (User){};
   rpc Delete(EntityId) returns (google.protobuf.Empty){};
 }
 

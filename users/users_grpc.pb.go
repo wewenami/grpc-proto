@@ -23,10 +23,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UsersClient interface {
-	Create(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*UserCreateResponse, error)
+	Create(ctx context.Context, in *UserCreate, opts ...grpc.CallOption) (*EntityId, error)
 	GetById(ctx context.Context, in *EntityId, opts ...grpc.CallOption) (*User, error)
 	List(ctx context.Context, in *Paging, opts ...grpc.CallOption) (*UsersList, error)
-	Update(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	Update(ctx context.Context, in *UserUpdate, opts ...grpc.CallOption) (*User, error)
 	Delete(ctx context.Context, in *EntityId, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -38,8 +38,8 @@ func NewUsersClient(cc grpc.ClientConnInterface) UsersClient {
 	return &usersClient{cc}
 }
 
-func (c *usersClient) Create(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*UserCreateResponse, error) {
-	out := new(UserCreateResponse)
+func (c *usersClient) Create(ctx context.Context, in *UserCreate, opts ...grpc.CallOption) (*EntityId, error) {
+	out := new(EntityId)
 	err := c.cc.Invoke(ctx, "/users.Users/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (c *usersClient) List(ctx context.Context, in *Paging, opts ...grpc.CallOpt
 	return out, nil
 }
 
-func (c *usersClient) Update(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+func (c *usersClient) Update(ctx context.Context, in *UserUpdate, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/users.Users/Update", in, out, opts...)
 	if err != nil {
@@ -87,10 +87,10 @@ func (c *usersClient) Delete(ctx context.Context, in *EntityId, opts ...grpc.Cal
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility
 type UsersServer interface {
-	Create(context.Context, *UserCreateRequest) (*UserCreateResponse, error)
+	Create(context.Context, *UserCreate) (*EntityId, error)
 	GetById(context.Context, *EntityId) (*User, error)
 	List(context.Context, *Paging) (*UsersList, error)
-	Update(context.Context, *User) (*User, error)
+	Update(context.Context, *UserUpdate) (*User, error)
 	Delete(context.Context, *EntityId) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUsersServer()
 }
@@ -99,7 +99,7 @@ type UsersServer interface {
 type UnimplementedUsersServer struct {
 }
 
-func (UnimplementedUsersServer) Create(context.Context, *UserCreateRequest) (*UserCreateResponse, error) {
+func (UnimplementedUsersServer) Create(context.Context, *UserCreate) (*EntityId, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedUsersServer) GetById(context.Context, *EntityId) (*User, error) {
@@ -108,7 +108,7 @@ func (UnimplementedUsersServer) GetById(context.Context, *EntityId) (*User, erro
 func (UnimplementedUsersServer) List(context.Context, *Paging) (*UsersList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
-func (UnimplementedUsersServer) Update(context.Context, *User) (*User, error) {
+func (UnimplementedUsersServer) Update(context.Context, *UserUpdate) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedUsersServer) Delete(context.Context, *EntityId) (*emptypb.Empty, error) {
@@ -128,7 +128,7 @@ func RegisterUsersServer(s grpc.ServiceRegistrar, srv UsersServer) {
 }
 
 func _Users_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserCreateRequest)
+	in := new(UserCreate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func _Users_Create_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/users.Users/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServer).Create(ctx, req.(*UserCreateRequest))
+		return srv.(UsersServer).Create(ctx, req.(*UserCreate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -182,7 +182,7 @@ func _Users_List_Handler(srv interface{}, ctx context.Context, dec func(interfac
 }
 
 func _Users_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(UserUpdate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -194,7 +194,7 @@ func _Users_Update_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/users.Users/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServer).Update(ctx, req.(*User))
+		return srv.(UsersServer).Update(ctx, req.(*UserUpdate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
