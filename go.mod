@@ -1,4 +1,4 @@
-module grpc-proto
+module github.com/wewenami/grpc-proto
 
 go 1.19
 
